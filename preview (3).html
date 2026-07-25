@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="pt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Resultados — Volta a Portugal à Vela 2026</title>
+<style>
+:root{--navy:#062578;--red:#ff1717;--green:#8bd400;--yellow:#ffd500;--ink:#172033;--muted:#667085;--line:#d9dfeb;--bg:#eef2f7}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;font-family:Inter,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;color:var(--ink);background:var(--bg)}
+.colorbar{display:grid;grid-template-columns:3fr 1.4fr 1fr 2fr;height:8px}
+.colorbar span:nth-child(1){background:var(--red)}
+.colorbar span:nth-child(2){background:var(--green)}
+.colorbar span:nth-child(3){background:var(--yellow)}
+.colorbar span:nth-child(4){background:var(--navy)}
+main{max-width:980px;margin:0 auto;padding:54px 18px 44px}
+.hero{text-align:center;margin-bottom:34px}
+.eyebrow{margin:0 0 .55rem;color:var(--navy);font-weight:900;letter-spacing:.14em;text-transform:uppercase;font-size:.78rem}
+h1{margin:0;font-size:clamp(2rem,6vw,4rem);line-height:.98;letter-spacing:-.045em;color:var(--navy)}
+.subtitle{margin:.8rem auto 0;max-width:52ch;color:var(--muted);line-height:1.6}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.card{display:block;text-decoration:none;color:inherit;background:#fff;border:1px solid var(--line);border-radius:18px;padding:26px;box-shadow:0 18px 45px rgba(6,37,120,.10);transition:.18s}
+.card:hover{transform:translateY(-3px);box-shadow:0 24px 58px rgba(6,37,120,.15);border-color:var(--navy)}
+.class-code{display:inline-flex;align-items:center;justify-content:center;min-width:72px;height:40px;border-radius:999px;background:var(--navy);color:#fff;font-weight:900;letter-spacing:.08em}
+.card h2{margin:1.2rem 0 .45rem;font-size:1.55rem;color:var(--navy)}
+.card p{margin:0;color:var(--muted);line-height:1.5}
+.arrow{display:block;margin-top:1.3rem;color:var(--red);font-weight:900}
+.notice{margin-top:24px;padding:15px 18px;background:#fff;border:1px solid var(--yellow);border-left:6px solid var(--green);border-radius:12px;color:var(--muted);font-size:.88rem;line-height:1.5}
+footer{text-align:center;color:var(--muted);font-size:.78rem;padding:0 18px 28px}
+@media(max-width:680px){.grid{grid-template-columns:1fr}main{padding-top:38px}}
+</style>
+</head>
+<body>
+<div class="colorbar"><span></span><span></span><span></span><span></span></div>
+<main>
+<header class="hero">
+<p class="eyebrow">Federação Portuguesa de Vela</p>
+<h1>Volta a Portugal à Vela 2026</h1>
+<p class="subtitle">Consulte os resultados atualizados por classe.</p>
+</header>
+<section class="grid">
+<a class="card" href="./anc.html">
+<span class="class-code">ANC</span>
+<h2>Resultados ANC</h2>
+<p>Classificação geral da classe ANC.</p>
+<span class="arrow">Abrir resultados →</span>
+</a>
+<a class="card" href="./orc.html">
+<span class="class-code">ORC</span>
+<h2>Resultados ORC</h2>
+<p>Classificação geral da classe ORC.</p>
+<span class="arrow">Abrir resultados →</span>
+</a>
+</section>
+<div class="notice">Esta versão está preparada para os ficheiros <strong>anc.html</strong> e <strong>orc.html</strong> na raiz do repositório.</div>
+</main>
+<footer>Volta a Portugal à Vela 2026 — Resultados</footer>
+</body>
+</html>
