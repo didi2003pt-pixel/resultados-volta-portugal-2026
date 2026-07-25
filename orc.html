@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="pt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Resultados ORC — Volta a Portugal à Vela 2026</title>
+<style>
+:root {
+  --navy:#062578; --red:#ff1717; --green:#8bd400; --yellow:#ffd500;
+  --ink:#172033; --muted:#667085; --line:#d9dfeb; --bg:#eef2f7;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0; font-family:Inter,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+  color:var(--ink); background:var(--bg);
+}
+header {
+  background:#fff; border-top:8px solid var(--navy); border-bottom:1px solid var(--line);
+  padding:22px 18px; text-align:center;
+}
+h1 { margin:0; font-size:clamp(1.5rem,4vw,2.4rem); color:var(--navy); }
+.subtitle { margin:.45rem 0 0; font-weight:900; color:var(--red); }
+.meta {
+  display:flex; flex-wrap:wrap; justify-content:center; gap:.6rem 1rem;
+  margin-top:1rem; color:var(--muted); font-size:.88rem;
+}
+.badge {
+  display:inline-flex; align-items:center; border-radius:999px;
+  padding:.35rem .7rem; font-weight:900; font-size:.75rem;
+  background:#fff2b2; color:#6b5200; border:1px solid #ead36e;
+}
+.badge.oficial { background:#dff2bf; color:#215e21; border-color:#a8cf79; }
+.badge.apuramento { background:#fde2e2; color:#8b1e1e; border-color:#efb0b0; }
+main { max-width:1240px; margin:24px auto; padding:0 14px 40px; }
+.card {
+  background:#fff; border:1px solid var(--line); border-radius:16px;
+  box-shadow:0 14px 40px rgba(6,37,120,.08); overflow:hidden;
+}
+.toolbar {
+  display:flex; justify-content:space-between; align-items:center; gap:1rem;
+  padding:14px 16px; border-bottom:1px solid var(--line); background:#fbfcfe;
+}
+button {
+  border:1px solid var(--line); background:#fff; border-radius:9px;
+  padding:.6rem .8rem; cursor:pointer; font-weight:800; color:var(--navy);
+}
+.table-wrap { overflow:auto; }
+table { width:100%; border-collapse:collapse; min-width:1050px; font-size:.82rem; }
+th {
+  background:var(--navy); color:#fff; padding:9px 7px;
+  position:sticky; top:0; white-space:nowrap;
+}
+td { padding:8px 7px; border-bottom:1px solid #e7ebf1; text-align:center; }
+tbody tr:nth-child(even) td { background:#f4f6f9; }
+td:nth-child(4) { text-align:left; font-weight:800; }
+td:nth-child(14) { background:#eef7dc; font-weight:900; }
+.message { padding:26px; text-align:center; color:var(--muted); }
+footer { text-align:center; color:var(--muted); font-size:.78rem; padding:18px; }
+@media(max-width:640px) {
+  .toolbar { align-items:flex-start; flex-direction:column; }
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>VOLTA A PORTUGAL À VELA 2026</h1>
+  <p class="subtitle">RESULTADOS ORC</p>
+  <div class="meta">
+    <span id="statusBadge" class="badge apuramento">A carregar…</span>
+    <span id="updatedAt">Última atualização: —</span>
+  </div>
+</header>
+
+<main>
+  <section class="card">
+    <div class="toolbar">
+      <strong>Classificação Geral — ORC</strong>
+      <button id="refreshBtn" type="button">Atualizar agora</button>
+    </div>
+    <div id="content" class="message">A carregar resultados…</div>
+  </section>
+</main>
+
+<footer>
+  Atualização automática a cada 30 segundos. Resultados sujeitos a validação da Comissão de Regatas.
+</footer>
+
+<script>
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzdmsnh5Kr486eMxvovE3cnAC8I6-Pad3mpk3GW4gWi8G3tSI7r7Xq1vI71fCZOmc32/exec';
+const CLASSE = 'ORC';
+const REFRESH_INTERVAL_MS = 30000;
+
+const content = document.getElementById('content');
+const statusBadge = document.getElementById('statusBadge');
+const updatedAt = document.getElementById('updatedAt');
+const refreshBtn = document.getElementById('refreshBtn');
+
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replaceAll('&','&amp;')
+    .replaceAll('<','&lt;')
+    .replaceAll('>','&gt;')
+    .replaceAll('"','&quot;')
+    .replaceAll("'",'&#039;');
+}
+
+function setStatus(status) {
+  statusBadge.textContent = status || 'EM APURAMENTO';
+  statusBadge.className = 'badge';
+  if (status === 'OFICIAL') statusBadge.classList.add('oficial');
+  else if (status === 'EM APURAMENTO') statusBadge.classList.add('apuramento');
+}
+
+function renderTable(headers, rows) {
+  const visibleIndexes = headers
+    .map((header, index) => (header === 'Observações' ? -1 : index))
+    .filter(index => index >= 0);
+
+  const thead = visibleIndexes
+    .map(index => `<th>${escapeHtml(headers[index])}</th>`)
+    .join('');
+
+  const tbody = rows.map(row => {
+    const cells = visibleIndexes
+      .map(index => `<td>${escapeHtml(row[index])}</td>`)
+      .join('');
+    return `<tr>${cells}</tr>`;
+  }).join('');
+
+  content.className = 'table-wrap';
+  content.innerHTML = `
+    <table>
+      <thead><tr>${thead}</tr></thead>
+      <tbody>${tbody}</tbody>
+    </table>`;
+}
+
+async function loadResults() {
+  if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL.includes('COLE_AQUI')) {
+    content.className = 'message';
+    content.textContent = 'Falta colocar a URL da aplicação Web no ficheiro HTML.';
+    return;
+  }
+
+  refreshBtn.disabled = true;
+  refreshBtn.textContent = 'A atualizar…';
+
+  try {
+    const url = `${APPS_SCRIPT_URL}?classe=${encodeURIComponent(CLASSE)}&_=${Date.now()}`;
+    const response = await fetch(url, { cache: 'no-store' });
+    if (!response.ok) throw new Error(`Erro HTTP ${response.status}`);
+
+    const data = await response.json();
+    if (!data.ok) throw new Error(data.error || 'Resposta inválida');
+
+    setStatus(data.estado);
+    updatedAt.textContent = 'Última atualização: ' +
+      new Intl.DateTimeFormat('pt-PT', {
+        dateStyle:'short', timeStyle:'medium'
+      }).format(new Date(data.atualizadoEm));
+
+    renderTable(data.headers, data.rows);
+  } catch (error) {
+    content.className = 'message';
+    content.textContent = 'Não foi possível obter os resultados: ' + error.message;
+  } finally {
+    refreshBtn.disabled = false;
+    refreshBtn.textContent = 'Atualizar agora';
+  }
+}
+
+refreshBtn.addEventListener('click', loadResults);
+loadResults();
+setInterval(loadResults, REFRESH_INTERVAL_MS);
+</script>
+</body>
+</html>
