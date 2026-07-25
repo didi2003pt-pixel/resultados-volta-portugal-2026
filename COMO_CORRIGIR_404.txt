@@ -1,0 +1,19 @@
+O ERRO 404 ACONTECE QUANDO O INDEX PROCURA UM FICHEIRO QUE NÃO EXISTE NESSE CAMINHO.
+
+Estrutura obrigatória no repositório:
+
+index.html
+.nojekyll
+resultados/
+  anc.html
+  orc.html
+
+Atenção:
+- Não use os nomes resultados_direto_anc(1).html ou resultados_direto_orc(1).html.
+- Não coloque anc.html e orc.html na raiz se o index aponta para /resultados/.
+- O GitHub distingue maiúsculas de minúsculas.
+- Faça commit das alterações e aguarde alguns minutos.
+- Em Settings > Pages, confirme:
+  Source: Deploy from a branch
+  Branch: main
+  Folder: /root
